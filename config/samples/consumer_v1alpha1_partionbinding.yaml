@@ -1,4 +1,4 @@
-apiVersion: consumer.camel.apache.org/v1alpha1
+apiVersion: chopper.camel.apache.org/v1alpha1
 kind: PartionBinding
 metadata:
   name: partionbinding-sample

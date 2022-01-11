@@ -6,9 +6,9 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
-  name: partionbindings.consumer.camel.apache.org
+  name: partionbindings.chopper.camel.apache.org
 spec:
-  group: consumer.camel.apache.org
+  group: chopper.camel.apache.org
   names:
     kind: PartionBinding
     listKind: PartionBindingList
