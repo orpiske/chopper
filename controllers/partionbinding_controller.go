@@ -25,7 +25,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	consumerv1alpha1 "github.com/orpiske/chopper/api/v1alpha1"
+	chopperv1alpha1 "github.com/orpiske/chopper/api/v1alpha1"
 )
 
 // PartionBindingReconciler reconciles a PartionBinding object
@@ -60,6 +60,6 @@ func (r *PartionBindingReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 // SetupWithManager sets up the controller with the Manager.
 func (r *PartionBindingReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&consumerv1alpha1.PartionBinding{}).
+		For(&chopperv1alpha1.PartionBinding{}).
 		Complete(r)
 }
