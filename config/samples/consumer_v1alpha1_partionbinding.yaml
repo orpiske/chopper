@@ -1,0 +1,6 @@
+apiVersion: consumer.camel.apache.org/v1alpha1
+kind: PartionBinding
+metadata:
+  name: partionbinding-sample
+spec:
+  # TODO(user): Add fields here

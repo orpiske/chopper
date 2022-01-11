@@ -1,0 +1,4 @@
+## Append samples you want in your CSV to this file as resources ##
+resources:
+- consumer_v1alpha1_partionbinding.yaml
+#+kubebuilder:scaffold:manifestskustomizesamples
