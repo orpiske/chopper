@@ -1,0 +1,6 @@
+apiVersion: chopper.camel.apache.org/v1alpha1
+kind: OffsetStore
+metadata:
+  name: offsetstore-sample
+spec:
+  # TODO(user): Add fields here

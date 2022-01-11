@@ -1,0 +1,24 @@
+# permissions for end users to edit offsetstores.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: offsetstore-editor-role
+rules:
+- apiGroups:
+  - chopper.camel.apache.org
+  resources:
+  - offsetstores
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - chopper.camel.apache.org
+  resources:
+  - offsetstores/status
+  verbs:
+  - get

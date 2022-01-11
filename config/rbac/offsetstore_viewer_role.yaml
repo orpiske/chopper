@@ -1,0 +1,20 @@
+# permissions for end users to view offsetstores.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: offsetstore-viewer-role
+rules:
+- apiGroups:
+  - chopper.camel.apache.org
+  resources:
+  - offsetstores
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - chopper.camel.apache.org
+  resources:
+  - offsetstores/status
+  verbs:
+  - get
