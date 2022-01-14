@@ -18,8 +18,13 @@ package controllers
 
 import (
 	"context"
-
+	"github.com/go-logr/logr"
+	v1 "k8s.io/api/apps/v1"
+	v1core "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
@@ -30,6 +35,7 @@ import (
 // OffsetStoreReconciler reconciles a OffsetStore object
 type OffsetStoreReconciler struct {
 	client.Client
+	Log    logr.Logger
 	Scheme *runtime.Scheme
 }
 
@@ -47,9 +53,76 @@ type OffsetStoreReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.10.0/pkg/reconcile
 func (r *OffsetStoreReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	logger := log.FromContext(ctx)
 
-	// TODO(user): your logic here
+	offsetStore := &chopperv1alpha1.OffsetStore{}
+
+	if err := r.Get(ctx, req.NamespacedName, offsetStore); err != nil {
+		if errors.IsNotFound(err) {
+			logger.Info("Get failed because the resource was not found")
+			return ctrl.Result{}, nil
+		} else {
+			logger.Error(err, "Get failed for other reasons")
+		}
+		return ctrl.Result{}, err
+	}
+
+	var deploy v1.Deployment
+	var roleNamespace = types.NamespacedName{
+		Namespace: req.Namespace,
+		Name:      "zookeeper-store",
+	}
+
+	defaultDeploy := v1.Deployment{
+		TypeMeta: metav1.TypeMeta{},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "zookeeper-store",
+			Namespace: req.Namespace,
+			Labels:    map[string]string{"app": "chopper"},
+		},
+		Spec: v1.DeploymentSpec{
+			Selector: &metav1.LabelSelector{
+				MatchLabels: map[string]string{"app": "chopper"},
+			},
+			Template: v1core.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: map[string]string{"app": "chopper"},
+				},
+				Spec: v1core.PodSpec{
+					Containers: []v1core.Container{{
+						Name:  offsetStore.Spec.Store.Type + "-store",
+						Image: offsetStore.Spec.Image,
+						Ports: []v1core.ContainerPort{
+							{
+								ContainerPort: 2181,
+								Protocol:      "TCP",
+							},
+						},
+						Resources: v1core.ResourceRequirements{},
+					},
+					},
+				},
+			},
+		},
+	}
+
+	if err := r.Get(ctx, roleNamespace, &deploy); err != nil {
+
+		if errors.IsNotFound(err) {
+			logger.Info("Deploying", "store", offsetStore.Spec.Store.Type)
+			deploy = defaultDeploy
+
+			if createErr := r.Create(ctx, &deploy); createErr != nil {
+				logger.Error(createErr, "Failed to deploy store")
+				return ctrl.Result{}, createErr
+			}
+		}
+	} else {
+		if updateErr := r.Update(ctx, &defaultDeploy); updateErr != nil {
+			logger.Error(updateErr, "Failed to update store deployment")
+			return ctrl.Result{}, updateErr
+		}
+	}
 
 	return ctrl.Result{}, nil
 }

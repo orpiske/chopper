@@ -87,6 +87,7 @@ func main() {
 	}
 	if err = (&controllers.OffsetStoreReconciler{
 		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("Chopper"),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "OffsetStore")

@@ -23,13 +23,18 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
+// StoreSpec defines where and how offsets are stored
+type StoreSpec struct {
+	Type string `json:"type,omitempty"`
+}
+
 // OffsetStoreSpec defines the desired state of OffsetStore
 type OffsetStoreSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of OffsetStore. Edit offsetstore_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	Store StoreSpec `json:"store,omitempty"`
+	Image string    `json:"image,omitempty"`
 }
 
 // OffsetStoreStatus defines the observed state of OffsetStore

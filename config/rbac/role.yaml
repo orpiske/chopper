@@ -9,6 +9,32 @@ rules:
 - apiGroups:
   - chopper.camel.apache.org
   resources:
+  - offsetstores
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - chopper.camel.apache.org
+  resources:
+  - offsetstores/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - chopper.camel.apache.org
+  resources:
+  - offsetstores/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - chopper.camel.apache.org
+  resources:
   - partionbindings
   verbs:
   - create

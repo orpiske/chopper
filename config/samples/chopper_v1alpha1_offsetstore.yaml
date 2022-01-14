@@ -3,4 +3,6 @@ kind: OffsetStore
 metadata:
   name: offsetstore-sample
 spec:
-  # TODO(user): Add fields here
+  store:
+    type: zookeeper
+  image: your image goes here
